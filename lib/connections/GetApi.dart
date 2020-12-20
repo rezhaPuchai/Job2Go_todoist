@@ -21,9 +21,9 @@ class GetApi{
     });
   }
 
-  Future<String> getAllTask() async {
+  Future<String> getAllTask(/*int _idProject*/) async {
     print("$TAG getTaskByIdProject: ${Const.BASE_API}");
-    return await Client.get(Const.BASE_API+ "tasks",
+    return await Client.get(Const.BASE_API+ "tasks"/*?project_id=$_idProject*/,
       headers: {
         "content-type": "application/json","accept":"application/json",
         "Authorization": "${Const.TOKEN}"

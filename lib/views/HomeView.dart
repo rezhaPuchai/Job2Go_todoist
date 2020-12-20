@@ -5,11 +5,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
 import 'package:todoist_project/helpers/Const.dart';
 import 'package:todoist_project/providers/ProjectData.dart';
 import 'package:todoist_project/connections/GetApi.dart';
 import 'package:todoist_project/connections/PostApi.dart';
+import 'package:todoist_project/providers/TaskData.dart';
 import 'package:todoist_project/providers/TitleData.dart';
 import 'package:todoist_project/views/ListTaskProjectView.dart';
 
@@ -31,12 +33,18 @@ class _HomeViewState extends State<HomeView> {
   GetApi getApi = GetApi();
 
   int _projectId = 0;
+  String _projectName = "";
 
   @override
   void initState() {
     super.initState();
     print("$TAG ${Const.title}");
     _getProject();
+    _permission();
+  }
+
+  _permission() async{
+    //await [Permission.camera, Permission.microphone, Permission.storage,].request();
   }
 
   _getProject(){
@@ -131,8 +139,9 @@ class _HomeViewState extends State<HomeView> {
                         Navigator.pop(context);
                       },
                     ),
+                    //Projects
                     ListTile(
-                      trailing: Icon(Icons.add),
+                      // trailing: Icon(Icons.add),
                       title: Text('Projects (${project.getLengtProject})'),
                       onTap: () {
                         Navigator.pop(context);
@@ -191,7 +200,7 @@ class _HomeViewState extends State<HomeView> {
       );
     }
     if(project.getIsProjectView){
-      return ListTaskProjectView(id: _projectId,);
+      return ListTaskProjectView(id: _projectId, projectName: _projectName);
     }
    /* return RefreshIndicator(
       key: _refreshIndicatorKey,
@@ -229,7 +238,9 @@ class _HomeViewState extends State<HomeView> {
         onTap: (){
           setState(() {
             _projectId = project.getProjectModel[index].id;
+            _projectName = project.getProjectModel[index].name;
           });
+          //Fluttertoast.showToast(msg: "$TAG $_projectName");
           project.setIsHomeView = false;
           project.setIsProjectView = true;
           tData.setTitleMain = project.getProjectModel[index].name;

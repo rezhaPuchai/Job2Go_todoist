@@ -10,12 +10,12 @@ class TaskData extends ChangeNotifier{
   void setListTask(List<dynamic> list, int _id) {
     print("$TAG list: ${list}");
     _listTask = List<TaskModel>.from(list.map((x) => TaskModel.fromJson(x)));
-    int count = 0;
-    for(int i=0; i<_listTask.length;i++){
-      if(_listTask[i].project_id==_id){
-        _taskByIdLength = count++;
-      }
-    }
+    // int count = 0;
+    // for(int i=0; i<_listTask.length;i++){
+    //   if(_listTask[i].project_id==_id){
+    //     _taskByIdLength = count++;
+    //   }
+    // }
     notifyListeners();
   }
   List<TaskModel> get getTaskModel => _listTask;
