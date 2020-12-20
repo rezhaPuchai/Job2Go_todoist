@@ -111,6 +111,7 @@ class _ListTaskProjectViewState extends State<ListTaskProjectView> {
                       Expanded(
                         child: ListView.builder(
                             itemCount: task.getLengtTask,
+                            padding: EdgeInsets.only(bottom: 80.0),
                             itemBuilder: (context, index){
                               return _buildListTask(context, index, task);
                             }),
