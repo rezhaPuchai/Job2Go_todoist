@@ -10,7 +10,8 @@ import 'package:todoist_project/helpers/Const.dart';
 import 'package:todoist_project/providers/ProjectData.dart';
 import 'package:todoist_project/connections/GetApi.dart';
 import 'package:todoist_project/connections/PostApi.dart';
-import 'package:todoist_project/views/ProjectView.dart';
+import 'package:todoist_project/providers/TitleData.dart';
+import 'package:todoist_project/views/ListTaskProjectView.dart';
 
 class HomeView extends StatefulWidget {
   @override
@@ -73,8 +74,8 @@ class _HomeViewState extends State<HomeView> {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<ProjectData>(
-      builder: (context, project, _){
+    return Consumer2<ProjectData, TitleData>(
+      builder: (context, project, tData, child){
         return AnnotatedRegion<SystemUiOverlayStyle>(
           value: SystemUiOverlayStyle(statusBarColor: Colors.transparent, statusBarIconBrightness: Brightness.light),
           child: WillPopScope(
@@ -91,7 +92,7 @@ class _HomeViewState extends State<HomeView> {
             child: isLoading == false
                 ? Scaffold(
               appBar: AppBar(
-                title: Text("Home"),
+                title: Text("${tData.getTitleMain}"),
               ),
               drawer: Drawer(
                 child: ListView(
@@ -126,6 +127,7 @@ class _HomeViewState extends State<HomeView> {
                       onTap: () {
                         project.setIsHomeView = true;
                         project.setIsProjectView = false;
+                        tData.setTitleMain = "Home";
                         Navigator.pop(context);
                       },
                     ),
@@ -141,7 +143,7 @@ class _HomeViewState extends State<HomeView> {
                       child: ListView.builder(
                           itemCount: project.getLengtProject,
                           itemBuilder: (context, index){
-                            return _buildListProject(context, index, project);
+                            return _buildListProject(context, index, project, tData);
                           }),
                     ),
                   ],
@@ -164,7 +166,34 @@ class _HomeViewState extends State<HomeView> {
   }//end build
 
   Widget _body(BuildContext context, ProjectData project){
-    return RefreshIndicator(
+    if(project.getIsHomeView){
+      return RefreshIndicator(
+          key: _refreshIndicatorKey,
+          onRefresh: _refresh,
+          child: Stack(
+            children: [
+              if(project.getIsHomeView)ListView(
+                padding: EdgeInsets.only(top: (MediaQuery.of(context).size.height/8)),
+                children: [
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Image.asset("assets/home.jpg"),
+                      Text("You Have ${project.getLengtProject} projects",
+                        style: TextStyle(fontSize: 30.0,),),
+                    ],
+                  ),
+                ],
+              ),
+
+            ],
+          )
+      );
+    }
+    if(project.getIsProjectView){
+      return ListTaskProjectView(id: _projectId,);
+    }
+   /* return RefreshIndicator(
       key: _refreshIndicatorKey,
       onRefresh: _refresh,
       child: Stack(
@@ -175,7 +204,7 @@ class _HomeViewState extends State<HomeView> {
               Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  Icon(Icons.home_repair_service_rounded, color: Colors.red, size: 140.0,),
+                  Image.asset("assets/home.jpg"),
                   Text("You Have ${project.getLengtProject} projects",
                     style: TextStyle(fontSize: 30.0,),),
                 ],
@@ -185,15 +214,15 @@ class _HomeViewState extends State<HomeView> {
           if(project.getIsProjectView)ListView(
             padding: EdgeInsets.only(top: 10.0, left: 8.0, right: 8.0, bottom: 30.0),
             children: [
-              ProjectView(id: _projectId,)
+              ListTaskProjectView(id: _projectId,)
             ],
           ),
         ],
       )
-    );
+    );*/
   }
 
-  Widget _buildListProject(BuildContext context, int index, ProjectData project){
+  Widget _buildListProject(BuildContext context, int index, ProjectData project, TitleData tData){
     return Material(
       color: Colors.transparent,
       child: InkWell(
@@ -203,6 +232,7 @@ class _HomeViewState extends State<HomeView> {
           });
           project.setIsHomeView = false;
           project.setIsProjectView = true;
+          tData.setTitleMain = project.getProjectModel[index].name;
           Navigator.pop(context);
         },
         child: Container(

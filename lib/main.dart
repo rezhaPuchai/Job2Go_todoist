@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:todoist_project/providers/TaskData.dart';
+import 'package:todoist_project/providers/TitleData.dart';
 import 'package:todoist_project/views/HomeView.dart';
 
 import 'providers/ProjectData.dart';
@@ -15,6 +17,8 @@ class MyApp extends StatelessWidget {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider<ProjectData>(create: (context) => ProjectData()),
+        ChangeNotifierProvider<TaskData>(create: (context) => TaskData()),
+        ChangeNotifierProvider<TitleData>(create: (context) => TitleData()),
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
