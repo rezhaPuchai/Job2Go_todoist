@@ -49,7 +49,6 @@ class _HomeViewState extends State<HomeView> {
           }
           return;
         }
-        ///Map<String, dynamic> map = json.decode(response.trim());
         Provider.of<ProjectData>(context, listen: false).setListProject(json.decode(response.trim()));
         setState(() {
           isLoading = false;
